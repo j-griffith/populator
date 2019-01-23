@@ -1,0 +1,11 @@
+apiVersion: "populator.k8s.io/v1alpha1"
+kind: "Populator"
+metadata:
+  name: "my-populator"
+  namespace: "default"
+spec:
+  type: "git"
+  git:
+    repo: "https://github.com/j-griffith/csi-connectors"
+    branch: "master"
+    mountPoint: "/git"
