@@ -1,0 +1,17 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: test-pv-pod
+spec:
+  volumes:
+    - name: test-pv-storage
+      persistentVolumeClaim:
+       claimName: pvc-restore
+  containers:
+    - name: test
+      image: alpine 
+      command: ["ls"]
+      args: ["/git/"]
+      volumeMounts:
+        - mountPath: "/git"
+          name: test-pv-storage
