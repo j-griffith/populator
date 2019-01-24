@@ -6,7 +6,7 @@ import metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 type GitPopulator struct {
 	Repo   string `json:"repo"` // Full URL of the repo (https or git protocol)
 	Branch string `json:"branch"`
-	Tag    string `json:"tag"`
+	Tag    string `json:"tag,omitempty"`
 }
 
 // PopulatorSpec provides a struct that details the type of external data source we're working with, as well as where to mount

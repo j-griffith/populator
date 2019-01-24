@@ -41,7 +41,7 @@ func CreateJobFromObjects(c kubernetes.Interface, pvc *core_v1.PersistentVolumeC
 			Image:      GitPopulatorImage,
 			MountPoint: p.Spec.Mountpoint,
 			PVCName:    pvc.Name,
-			Args:       []string{p.Spec.Git.Branch, p.Spec.Git.Repo, p.Spec.Mountpoint},
+			Args:       []string{p.Spec.Git.Repo, p.Spec.Git.Branch, p.Spec.Mountpoint},
 		}
 		job = BuildJobSpec(req)
 	case "s3":
