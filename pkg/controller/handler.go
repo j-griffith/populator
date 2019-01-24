@@ -4,6 +4,7 @@ import (
 	"log"
 
 	clientset "github.com/j-griffith/populator/pkg/clientset/v1alpha1"
+	"github.com/j-griffith/populator/pkg/populator"
 	core_v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -40,8 +41,14 @@ func (p *PopulatorHandler) ObjectCreated(obj interface{}) {
 		log.Printf("PV was created but will NOT be populated\n")
 		return
 	}
-	log.Printf("launch population process for PVC: %s, using populator: %s", pvc.Name, pop.Name)
-	log.Printf("completed create event handling for pvc: %s", pvc.Name)
+	// CreateJobFromObjects creates the job spec and launches it
+	job, err := populator.CreateJobFromObjects(p.KubeClient, pvc, pop)
+	if err != nil {
+
+	}
+	log.Printf("succesfully launch a populator job (%v) for PVC %s", job, pvc.Name)
+	// TODO
+	// * We'll need to add some tracking type data to the PVC in the form of attributes
 }
 
 // ObjectDeleted is called when an object is deleted
