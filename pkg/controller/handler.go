@@ -35,6 +35,15 @@ func (p *PopulatorHandler) ObjectCreated(obj interface{}) {
 	log.Println("handle ObjectCreated event")
 	// assert the type to a PVC object to pull out relevant data
 	pvc := obj.(*core_v1.PersistentVolumeClaim)
+
+	// If there's no DS specified just ignore it and move along (and don't vomit when you try and acess the field)
+	if pvc.Spec.DataSource == nil {
+		log.Printf("no DataSource entry for PVC %s, moving along", pvc.Name)
+		return
+	}
+
+	// TODO: throw in some error checking so we don't hit nil pointer type crashes if somebody didn't fill this out correctly
+	// Some of it we handle with the requirements in the CRD, others we can add webhooks, but for now living on the edge
 	pop, err := p.PopulatorClient.Populators("default").Get(pvc.Spec.DataSource.Name, metav1.GetOptions{})
 	if err != nil {
 		log.Printf("unable to fetch requested DataSource: %s, error: %v\n", pvc.Spec.DataSource.Name, err)
