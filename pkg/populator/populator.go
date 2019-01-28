@@ -37,7 +37,7 @@ func CreateJobFromObjects(c kubernetes.Interface, pvc *core_v1.PersistentVolumeC
 	case "git":
 		log.Printf("creating job for git-populator: %v", p.Spec)
 		req = &JobRequest{
-			Name:       p.GetObjectMeta().GetName(),
+			Name:       p.GetObjectMeta().GetName() + "-pvc-" + pvc.Name,
 			Image:      GitPopulatorImage,
 			MountPoint: p.Spec.Mountpoint,
 			PVCName:    pvc.Name,
@@ -61,7 +61,7 @@ func CreateJobFromObjects(c kubernetes.Interface, pvc *core_v1.PersistentVolumeC
 func BuildJobSpec(r *JobRequest) *batch.Job {
 	job := &batch.Job{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "demo-job",
+			Name: r.Name,
 		},
 		Spec: batch.JobSpec{
 			TTLSecondsAfterFinished: &ttl,
@@ -74,7 +74,7 @@ func BuildJobSpec(r *JobRequest) *batch.Job {
 				Spec: core_v1.PodSpec{
 					Containers: []core_v1.Container{
 						{
-							Name:  "populator-container-" + r.PVCName,
+							Name:  r.Name,
 							Image: r.Image,
 							Args:  r.Args,
 							VolumeMounts: []core_v1.VolumeMount{
